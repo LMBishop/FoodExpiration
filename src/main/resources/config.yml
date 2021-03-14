@@ -1,0 +1,46 @@
+expiry-stages:
+  - name: "Fresh"
+    after:
+      time: 0
+      unit: "MILLISECONDS"
+    hunger-modifier: 1.25
+
+  - name: "Edible"
+    after:
+      time: 6
+      unit: "HOURS"
+    hunger-modifier: 1.0
+
+  - name: "Stale"
+    after:
+      time: 12
+      unit: "HOURS"
+    hunger-modifier: 0.5
+
+  - name: "Spoilt"
+    after:
+      time: 18
+      unit: "HOURS"
+    hunger-modifier: 0.25
+    effects:
+      - type: "CONFUSION"
+        duration: 120
+        amplifier: 0
+
+  - name: "Inedible"
+    after:
+      time: 24
+      unit: "HOURS"
+    hunger-modifier: 0.0
+    effects:
+      - type: "CONFUSION"
+        duration: 120
+        amplifier: 0
+      - type: "POISON"
+        duration: 100
+        amplifier: 1
+
+options:
+  time-resolution: "HOURS"
+  allow-mixing: true
+  notify-mixing: true

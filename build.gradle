@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.leonardobishop'
+version = '1.0'
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'plugin.yml'
+        expand('version': project.version)
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    // Spigot
+    maven { url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/') }
+}
+
+dependencies {
+    // Spigot
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+}
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}

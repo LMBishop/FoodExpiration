@@ -1,0 +1,9 @@
+name: FoodExpiry
+version: ${version}
+main: com.leonardobishop.foodexpiry.FoodExpiryPlugin
+author: LMBishop
+api-version: "1.16"
+
+commands:
+  foodexpiry:
+    description: "Main command for FoodExpiry"
