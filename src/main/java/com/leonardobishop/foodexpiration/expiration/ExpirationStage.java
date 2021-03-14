@@ -1,4 +1,4 @@
-package com.leonardobishop.foodexpiry.expiration;
+package com.leonardobishop.foodexpiration.expiration;
 
 import org.bukkit.potion.PotionEffect;
 

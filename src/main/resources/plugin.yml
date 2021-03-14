@@ -1,9 +1,9 @@
-name: FoodExpiry
+name: FoodExpiration
 version: ${version}
-main: com.leonardobishop.foodexpiry.FoodExpiryPlugin
+main: com.leonardobishop.foodexpiration.FoodExpirationPlugin
 author: LMBishop
 api-version: "1.16"
 
 commands:
-  foodexpiry:
-    description: "Main command for FoodExpiry"
+  foodexpiration:
+    description: "Main command for FoodExpiration"

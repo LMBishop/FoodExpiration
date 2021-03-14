@@ -1,4 +1,4 @@
-package com.leonardobishop.foodexpiry.expiration;
+package com.leonardobishop.foodexpiration.expiration;
 
 import java.util.ArrayList;
 import java.util.Collections;

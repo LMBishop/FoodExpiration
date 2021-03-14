@@ -1,11 +1,11 @@
-package com.leonardobishop.foodexpiry;
+package com.leonardobishop.foodexpiration;
 
-import com.leonardobishop.foodexpiry.command.FoodExpiryCommand;
-import com.leonardobishop.foodexpiry.expiration.ExpirationStage;
-import com.leonardobishop.foodexpiry.expiration.ExpirationStageRegister;
-import com.leonardobishop.foodexpiry.listener.FoodConsumeListener;
-import com.leonardobishop.foodexpiry.listener.InventoryModificationListener;
-import com.leonardobishop.foodexpiry.listener.JoinEventListener;
+import com.leonardobishop.foodexpiration.command.FoodExpirationCommand;
+import com.leonardobishop.foodexpiration.expiration.ExpirationStage;
+import com.leonardobishop.foodexpiration.expiration.ExpirationStageRegister;
+import com.leonardobishop.foodexpiration.listener.FoodConsumeListener;
+import com.leonardobishop.foodexpiration.listener.InventoryModificationListener;
+import com.leonardobishop.foodexpiration.listener.JoinEventListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class FoodExpiryPlugin extends JavaPlugin {
+public class FoodExpirationPlugin extends JavaPlugin {
 
     public static NamespacedKey PRODUCTION_NAMESPACED_KEY;
 
@@ -50,7 +50,7 @@ public class FoodExpiryPlugin extends JavaPlugin {
         File config = new File(this.getDataFolder() + File.separator + "config.yml");
         try {
             if (config.createNewFile()) {
-                try (OutputStream out = new FileOutputStream(config); InputStream in = FoodExpiryPlugin.class.getClassLoader().getResourceAsStream("config.yml")) {
+                try (OutputStream out = new FileOutputStream(config); InputStream in = FoodExpirationPlugin.class.getClassLoader().getResourceAsStream("config.yml")) {
                     byte[] buffer = new byte[1024];
                     int length = in.read(buffer);
                     while (length != -1) {
@@ -69,7 +69,7 @@ public class FoodExpiryPlugin extends JavaPlugin {
         super.getServer().getPluginManager().registerEvents(new InventoryModificationListener(this), this);
         super.getServer().getPluginManager().registerEvents(new FoodConsumeListener(this), this);
 
-        super.getServer().getPluginCommand("foodexpiry").setExecutor(new FoodExpiryCommand(this));
+        super.getServer().getPluginCommand("foodexpiration").setExecutor(new FoodExpirationCommand(this));
 
         super.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -82,8 +82,8 @@ public class FoodExpiryPlugin extends JavaPlugin {
     }
 
     /**
-     * Get the {@link com.leonardobishop.foodexpiry.expiration.ExpirationStageRegister},
-     * which contains all {@link com.leonardobishop.foodexpiry.expiration.ExpirationStage}.
+     * Get the {@link com.leonardobishop.foodexpiration.expiration.ExpirationStageRegister},
+     * which contains all {@link com.leonardobishop.foodexpiration.expiration.ExpirationStage}.
      *
      * @return The expiration stage register
      */
@@ -93,7 +93,7 @@ public class FoodExpiryPlugin extends JavaPlugin {
 
     /**
      * Apply food descriptors to every item in the Player's inventory. Internally calls
-     * {@link FoodExpiryPlugin#applyFoodDescriptor(ItemStack)} for every item in their Inventory.
+     * {@link FoodExpirationPlugin#applyFoodDescriptor(ItemStack)} for every item in their Inventory.
      *
      * @param player the player to apply food descriptors to
      */
@@ -106,7 +106,7 @@ public class FoodExpiryPlugin extends JavaPlugin {
     /**
      * Apply food descriptors to the ItemStack. This assigns the value in the PersistentDataContainer if it
      * does not already exist to the current system time, and modifies the lore of
-     * the ItemStack to reflect the {@link com.leonardobishop.foodexpiry.expiration.ExpirationStage} the food item is at.
+     * the ItemStack to reflect the {@link com.leonardobishop.foodexpiration.expiration.ExpirationStage} the food item is at.
      *
      * @param is the itemstack to apply to
      */
@@ -119,11 +119,11 @@ public class FoodExpiryPlugin extends JavaPlugin {
             PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
             long time;
 
-            if (!persistentDataContainer.has(FoodExpiryPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG)) {
+            if (!persistentDataContainer.has(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG)) {
                 time = System.currentTimeMillis();
-                persistentDataContainer.set(FoodExpiryPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG, time);
+                persistentDataContainer.set(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG, time);
             } else {
-                time = persistentDataContainer.get(FoodExpiryPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG);
+                time = persistentDataContainer.get(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG);
             }
 
             ExpirationStage stage = expirationStageRegister.getStageOf(System.currentTimeMillis() - time);

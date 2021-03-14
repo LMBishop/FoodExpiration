@@ -1,15 +1,15 @@
-package com.leonardobishop.foodexpiry.listener;
+package com.leonardobishop.foodexpiration.listener;
 
-import com.leonardobishop.foodexpiry.FoodExpiryPlugin;
+import com.leonardobishop.foodexpiration.FoodExpirationPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class JoinEventListener implements Listener {
 
-    private final FoodExpiryPlugin plugin;
+    private final FoodExpirationPlugin plugin;
 
-    public JoinEventListener(FoodExpiryPlugin plugin) {
+    public JoinEventListener(FoodExpirationPlugin plugin) {
         this.plugin = plugin;
     }
 

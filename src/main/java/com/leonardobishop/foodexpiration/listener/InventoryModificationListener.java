@@ -1,6 +1,6 @@
-package com.leonardobishop.foodexpiry.listener;
+package com.leonardobishop.foodexpiration.listener;
 
-import com.leonardobishop.foodexpiry.FoodExpiryPlugin;
+import com.leonardobishop.foodexpiration.FoodExpirationPlugin;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,9 +10,9 @@ import org.bukkit.event.inventory.InventoryType;
 
 public class InventoryModificationListener implements Listener {
 
-    private final FoodExpiryPlugin plugin;
+    private final FoodExpirationPlugin plugin;
 
-    public InventoryModificationListener(FoodExpiryPlugin plugin) {
+    public InventoryModificationListener(FoodExpirationPlugin plugin) {
         this.plugin = plugin;
     }
 
