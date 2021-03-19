@@ -4,7 +4,7 @@ import com.leonardobishop.foodexpiration.FoodExpirationPlugin;
 import com.leonardobishop.foodexpiration.expiration.ExpirationStage;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -19,7 +19,9 @@ public class FoodConsumeListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onFoodConsume(PlayerItemConsumeEvent event) {
+    public void onFoodConsume(FoodLevelChangeEvent event) {
+        if (event.getItem() == null) return;
+        ItemFood
         ItemMeta itemMeta = event.getItem().getItemMeta();
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
 
