@@ -3,6 +3,8 @@ package com.leonardobishop.foodexpiration;
 import com.leonardobishop.foodexpiration.command.FoodExpirationCommand;
 import com.leonardobishop.foodexpiration.expiration.ExpirationStage;
 import com.leonardobishop.foodexpiration.expiration.ExpirationStageRegister;
+import com.leonardobishop.foodexpiration.foodlevel.FoodLevelProvider;
+import com.leonardobishop.foodexpiration.foodlevel.ReflectionFoodLevelProvider;
 import com.leonardobishop.foodexpiration.listener.FoodConsumeListener;
 import com.leonardobishop.foodexpiration.listener.InventoryModificationListener;
 import com.leonardobishop.foodexpiration.listener.JoinEventListener;
@@ -35,12 +37,14 @@ public class FoodExpirationPlugin extends JavaPlugin {
     public static NamespacedKey PRODUCTION_NAMESPACED_KEY;
 
     private ExpirationStageRegister expirationStageRegister;
+    private FoodLevelProvider foodLevelProvider;
 
     @Override
     public void onEnable() {
         PRODUCTION_NAMESPACED_KEY = new NamespacedKey(this, "production-date");
 
         this.expirationStageRegister = new ExpirationStageRegister();
+        this.foodLevelProvider = new ReflectionFoodLevelProvider();
 
         File directory = new File(String.valueOf(this.getDataFolder()));
         if (!directory.exists() && !directory.isDirectory()) {
@@ -101,6 +105,17 @@ public class FoodExpirationPlugin extends JavaPlugin {
         for (ItemStack is : player.getInventory()) {
             applyFoodDescriptor(is);
         }
+    }
+
+    /**
+     * Get the {@link FoodLevelProvider} which is currently enabled. This will be an instance of
+     * {@link ReflectionFoodLevelProvider}, unless I have added new ones with direct access and
+     * forgot to update this javadoc.
+     *
+     * @return the active food level provider
+     */
+    public FoodLevelProvider getFoodLevelProvider() {
+        return foodLevelProvider;
     }
 
     /**

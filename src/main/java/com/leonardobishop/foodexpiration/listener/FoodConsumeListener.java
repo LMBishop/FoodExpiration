@@ -20,8 +20,8 @@ public class FoodConsumeListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onFoodConsume(FoodLevelChangeEvent event) {
-        if (event.getItem() == null) return;
-        ItemFood
+        if (event.getItem() == null || !event.getItem().getType().isEdible()) return;
+
         ItemMeta itemMeta = event.getItem().getItemMeta();
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
 
@@ -30,10 +30,12 @@ public class FoodConsumeListener implements Listener {
         long time = persistentDataContainer.get(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG);
         ExpirationStage stage = plugin.getExpirationStages().getStageOf(System.currentTimeMillis() - time);
 
-        //TODO modify food
+        int modifiedFoodLevel = (int) ((double) plugin.getFoodLevelProvider().getFoodLevel(event.getItem()) * stage.getHungerModifier());
+        int newPlayerFoodLevel = event.getEntity().getFoodLevel() + modifiedFoodLevel;
+        event.setFoodLevel(Math.min(newPlayerFoodLevel, 20));
 
         for (PotionEffect potionEffect : stage.getPotionEffects()) {
-            potionEffect.apply(event.getPlayer());
+            potionEffect.apply(event.getEntity());
         }
     }
 }
