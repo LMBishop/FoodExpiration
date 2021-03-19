@@ -17,6 +17,10 @@ public class ExpirationStageRegister {
         this.acceptingRegistrations = true;
     }
 
+    public List<ExpirationStage> getStages() {
+        return Collections.unmodifiableList(expirationStages);
+    }
+
     public void clearRegistrations() {
         expirationStages.clear();
         acceptingRegistrations = true;

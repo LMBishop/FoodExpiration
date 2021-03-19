@@ -3,6 +3,7 @@ package com.leonardobishop.foodexpiration;
 import com.leonardobishop.foodexpiration.command.FoodExpirationCommand;
 import com.leonardobishop.foodexpiration.expiration.ExpirationStage;
 import com.leonardobishop.foodexpiration.expiration.ExpirationStageRegister;
+import com.leonardobishop.foodexpiration.expiration.PotionEffectWrapper;
 import com.leonardobishop.foodexpiration.foodlevel.FoodLevelProvider;
 import com.leonardobishop.foodexpiration.foodlevel.ReflectionFoodLevelProvider;
 import com.leonardobishop.foodexpiration.listener.FoodConsumeListener;
@@ -143,9 +144,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
 
             ExpirationStage stage = expirationStageRegister.getStageOf(System.currentTimeMillis() - time);
 
-            List<String> lore = new ArrayList<>(Collections.singletonList(ChatColor.GRAY + stage.getName()));
-
-            itemMeta.setLore(lore);
+            itemMeta.setLore(stage.asItemLore());
             is.setItemMeta(itemMeta);
         }
     }
@@ -174,14 +173,19 @@ public class FoodExpirationPlugin extends JavaPlugin {
                     continue;
                 }
 
-                Object hungerModifier = stage.get("hunger-modifier");
-                List<PotionEffect> effects = new ArrayList<>();
+                Object hungerModifier = stage.getOrDefault("hunger-modifier", 1);
+                List<PotionEffectWrapper> effects = new ArrayList<>();
+
+                Object description = stage.get("description");
+                Object extendedDescription = stage.get("extended-description");
 
                 if (stage.containsKey("effects")) {
                     for (Map effect : (List<Map>) stage.get("effects")) {
                         String type = (String) effect.get("type");
-                        int duration = (int) effect.get("duration");
-                        int amplifier = (int) effect.get("amplifier");
+                        int duration = (int) effect.getOrDefault("duration", 0);
+                        int amplifier = (int) effect.getOrDefault("amplifier", 0);
+                        Object namedChance = effect.getOrDefault("chance", 1);
+                        double chance = namedChance instanceof Integer ? (double) (int) namedChance : (double) namedChance;
 
                         if (type == null) continue;
 
@@ -192,12 +196,14 @@ public class FoodExpirationPlugin extends JavaPlugin {
                         }
 
                         PotionEffect potionEffect = new PotionEffect(potionEffectType, duration, amplifier);
-                        effects.add(potionEffect);
+                        effects.add(new PotionEffectWrapper(potionEffect, chance));
                     }
                 }
 
                 ExpirationStage expirationStage = new ExpirationStage(name, timeUnit, time, effects);
                 expirationStage.setHungerModifier(hungerModifier instanceof Double ? (double) hungerModifier : (int) hungerModifier);
+                expirationStage.setDescription(description instanceof String ? (String) description : null);
+                expirationStage.setExtendedDescription(extendedDescription instanceof List ? (List<String>) extendedDescription : null);
 
                 expirationStageRegister.register(expirationStage);
             }

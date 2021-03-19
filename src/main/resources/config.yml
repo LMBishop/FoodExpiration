@@ -1,37 +1,61 @@
+# The default configuration can be located here
+# https://github.com/LMBishop/FoodExpiration/blob/master/src/main/resources/config.yml
+
 expiry-stages:
   - name: "Fresh"
     after:
       time: 0
       unit: "MILLISECONDS"
     hunger-modifier: 1.25
+    description: "&7%name%"
+    extended-description:
+      - "&7&oTasty and extra nutritious!"
 
   - name: "Edible"
     after:
       time: 6
       unit: "HOURS"
     hunger-modifier: 1.0
+    description: "&7%name%"
+    extended-description:
+      - "&7&oSuitable and safe to eat."
 
   - name: "Stale"
     after:
       time: 12
       unit: "HOURS"
-    hunger-modifier: 0.5
+    hunger-modifier: 0.75
+    description: "&7%name%"
+    extended-description:
+      - "&7&oNo longer fresh or pleasant to eat."
 
-  - name: "Spoilt"
+  - name: "Spoiled"
     after:
       time: 18
       unit: "HOURS"
-    hunger-modifier: 0.25
+    hunger-modifier: 0.5
+    description: "&6%name%"
+    extended-description:
+      - "&7&oPotentially unsafe food, with"
+      - "&7little nutritional value."
     effects:
       - type: "CONFUSION"
         duration: 120
         amplifier: 0
+        chance: 0.7
+      - type: "POISON"
+        duration: 60
+        amplifier: 0
+        chance: 0.4
 
   - name: "Inedible"
     after:
       time: 24
       unit: "HOURS"
     hunger-modifier: 0.0
+    description: "&c%name%"
+    extended-description:
+      - "&7&oNot suitable for consumption."
     effects:
       - type: "CONFUSION"
         duration: 120

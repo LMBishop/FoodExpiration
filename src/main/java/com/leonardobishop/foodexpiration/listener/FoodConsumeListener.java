@@ -2,6 +2,7 @@ package com.leonardobishop.foodexpiration.listener;
 
 import com.leonardobishop.foodexpiration.FoodExpirationPlugin;
 import com.leonardobishop.foodexpiration.expiration.ExpirationStage;
+import com.leonardobishop.foodexpiration.expiration.PotionEffectWrapper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -9,6 +10,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class FoodConsumeListener implements Listener {
 
@@ -34,8 +37,10 @@ public class FoodConsumeListener implements Listener {
         int newPlayerFoodLevel = event.getEntity().getFoodLevel() + modifiedFoodLevel;
         event.setFoodLevel(Math.min(newPlayerFoodLevel, 20));
 
-        for (PotionEffect potionEffect : stage.getPotionEffects()) {
-            potionEffect.apply(event.getEntity());
+        for (PotionEffectWrapper potionEffect : stage.getPotionEffects()) {
+            if (potionEffect.getChance() >= 1 || ThreadLocalRandom.current().nextDouble() < potionEffect.getChance()) {
+                potionEffect.getPotionEffect().apply(event.getEntity());
+            }
         }
     }
 }
