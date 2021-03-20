@@ -6,7 +6,7 @@
 Spigot Plugin which adds expiration to food in Minecraft using new [PersistentDataContainers](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/persistence/PersistentDataContainer.html).
 
 ## Downloads/Building
-Compiled versions of stable releases can be found on [SpigotMC](https://www.spigotmc.org/resources//)
+Compiled versions of stable releases can be found on [SpigotMC](https://www.spigotmc.org/resources/90384/)
 
 Alternatively, you can build FoodExpiration yourself via Gradle from source using ``gradlew build``.
 
