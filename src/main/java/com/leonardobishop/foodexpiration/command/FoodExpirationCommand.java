@@ -16,7 +16,7 @@ import java.util.List;
 public class FoodExpirationCommand implements TabExecutor {
 
     private final FoodExpirationPlugin plugin;
-    private final List<String> options = Arrays.asList("dump");
+    private final List<String> options = Arrays.asList("dump", "reload");
 
     public FoodExpirationCommand(FoodExpirationPlugin plugin) {
         this.plugin = plugin;
@@ -24,7 +24,6 @@ public class FoodExpirationCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        plugin.reloadPluginConfiguration();
         if (args.length > 0 && args[0].equalsIgnoreCase("dump")) {
             sender.sendMessage(ChatColor.GRAY + "Expiration stages:");
             int i = 0;
@@ -33,8 +32,14 @@ public class FoodExpirationCommand implements TabExecutor {
                 i++;
             }
             return true;
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("reload")) {
+            plugin.reloadPluginConfiguration();
+            sender.sendMessage(ChatColor.GRAY + "FoodExpiration was reloaded.");
+            return true;
         }
-        sender.sendMessage(ChatColor.GRAY + "FoodExpiration was reloaded.");
+        sender.sendMessage(ChatColor.GRAY + "FoodExpiration v" + plugin.getDescription().getVersion()
+                + " by LMBishop with " + ChatColor.RED + "<3");
+        sender.sendMessage(ChatColor.GRAY + "More information: " + ChatColor.UNDERLINE + "https://github.com/LMBishop/FoodExpiration");
         return true;
     }
 
