@@ -7,3 +7,8 @@ api-version: "1.16"
 commands:
   foodexpiration:
     description: "Main command for FoodExpiration"
+    permission: foodexpiration.command
+
+permissions:
+  foodexpiration.command:
+    description: "Access main command for FoodExpiration"

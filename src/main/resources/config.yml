@@ -45,7 +45,7 @@
 #          #
 #          # Values: <list of maps>
 #          effects:
-#                    # The type of option effect
+#                    # The type of potion effect
 #                    #
 #                    # Values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
 #                    type: [...]

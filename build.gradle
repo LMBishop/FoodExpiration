@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group = 'com.leonardobishop'
@@ -18,11 +19,26 @@ repositories {
 
     // Spigot
     maven { url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/') }
+    // bStats
+    maven { url = uri('https://repo.codemc.org/repository/maven-public') }
 }
 
 dependencies {
     // Spigot
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    // bStats
+    implementation 'org.bstats:bstats-bukkit-lite:1.8'
+}
+
+shadowJar {
+    relocate 'org.bstats', 'com.leonardobishop.foodexpiration.libs.bstats'
+    archiveClassifier.set('')
+}
+
+jar.enabled = false
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
 }
 
 compileJava {

@@ -10,6 +10,7 @@ import com.leonardobishop.foodexpiration.listener.FoodConsumeListener;
 import com.leonardobishop.foodexpiration.listener.InventoryModificationListener;
 import com.leonardobishop.foodexpiration.listener.JoinEventListener;
 import org.apache.commons.lang.time.DateUtils;
+import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -73,6 +74,11 @@ public class FoodExpirationPlugin extends JavaPlugin {
             super.getLogger().severe("Failed to create default config.");
             e.printStackTrace();
             super.getLogger().severe(ChatColor.RED + "...please delete the FoodExpiry directory and try RESTARTING (/not/ reloading).");
+        }
+
+        MetricsLite metrics = new MetricsLite(this, 10748);
+        if (metrics.isEnabled()) {
+            super.getLogger().info("Metrics started. This can be disabled at /plugins/bStats/config.yml.");
         }
 
         super.getServer().getPluginManager().registerEvents(new JoinEventListener(this), this);
