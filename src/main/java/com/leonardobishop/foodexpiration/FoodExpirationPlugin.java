@@ -22,6 +22,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,6 +33,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +47,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
     private FoodLevelProvider foodLevelProvider;
     private Configuration mainConfiguration;
     private int timeResolution;
+    private BukkitTask refreshTask;
 
     @Override
     public void onEnable() {
@@ -87,14 +91,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
 
         super.getServer().getPluginCommand("foodexpiration").setExecutor(new FoodExpirationCommand(this));
 
-        super.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                applyFoodDescriptorsInventory(player);
-                //TODO change
-            }
-        }, 1L, 1L);
         super.getServer().getScheduler().scheduleSyncDelayedTask(this, this::reloadPluginConfiguration);
-
     }
 
     /**
@@ -149,7 +146,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
             if (!persistentDataContainer.has(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG)) {
                 time = System.currentTimeMillis();
                 if (mainConfiguration.getBooleanValue("rounding.enabled", true)) {
-                    time = DateUtils.round(System.currentTimeMillis(), timeResolution).getTime();
+                    time = DateUtils.round(new Date(time), timeResolution).getTime();
                 }
                 persistentDataContainer.set(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG, time);
             } else {
@@ -241,10 +238,34 @@ public class FoodExpirationPlugin extends JavaPlugin {
             }
         }
 
+        if (refreshTask != null && !refreshTask.isCancelled()) refreshTask.cancel();
+        if (mainConfiguration.getBooleanValue("item-refresh.auto-refresh", true)) {
+            int interval = mainConfiguration.getIntValue("item-refresh.auto-refresh-time", 1);
+            refreshTask = Bukkit.getServer().getScheduler().runTaskTimer(this, new ItemRefreshRunnable(), interval, interval);
+        }
+
         expirationStageRegister.finaliseRegistrations();
     }
 
     public Configuration getConfiguration() {
         return mainConfiguration;
+    }
+
+    public class ItemRefreshRunnable implements Runnable {
+
+        LinkedList<Player> queue = new LinkedList<>();
+
+        @Override
+        public void run() {
+            Player player = queue.poll();
+            if (player == null) {
+                queue.addAll(Bukkit.getOnlinePlayers());
+                return;
+            }
+            if (!player.isOnline()) {
+                return;
+            }
+            applyFoodDescriptorsInventory(player);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.leonardobishop.foodexpiration.listener;
 
 import com.leonardobishop.foodexpiration.FoodExpirationPlugin;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,8 +42,8 @@ public class InventoryModificationListener implements Listener {
 
         if (event.getClickedInventory() != null
                 && event.getClickedInventory().getType() == InventoryType.PLAYER
-                && event.getCurrentItem() != null
-                && event.getCursor() != null
+                && event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR
+                && event.getCursor() != null && event.getCursor().getType() != Material.AIR
                 && event.getCursor().getType() == event.getCurrentItem().getType()) {
             if (!(event.getWhoClicked() instanceof Player)) return;
             Player player = (Player) event.getWhoClicked();

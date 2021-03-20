@@ -1,4 +1,4 @@
-# The default configuration with preserved can be located here
+# The default configuration with preserved comments can be located here
 # https://github.com/LMBishop/FoodExpiration/blob/master/src/main/resources/config.yml
 # Generated with plugin version ${version}
 
@@ -173,3 +173,17 @@ rounding:
 # Values:  true, false
 # Default: true
 allow-mixing: true
+
+item-refresh:
+  # Constantly check the player's inventory for food items and apply expiry dates on an interval.
+  # This works on a queue based system to prevent lag, although this can be disabled entirely here and
+  # instead lores will only be applied on events.
+  #
+  # Values:  true, false
+  # Default: true
+  auto-refresh: true
+  # The interval (in ticks) to process the next player in the refresh queue.
+  #
+  # Values:  <any positive integer>
+  # Default: 1
+  auto-refresh-time: 1
