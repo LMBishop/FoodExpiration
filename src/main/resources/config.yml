@@ -120,7 +120,7 @@ expiry-stages:
     description: "&6%name%"
     extended-description:
       - "&7&oPotentially unsafe food, with"
-      - "&7little nutritional value."
+      - "&7&olittle nutritional value."
     effects:
       - type: "CONFUSION"
         duration: 120

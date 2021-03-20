@@ -146,7 +146,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
             if (!persistentDataContainer.has(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG)) {
                 time = System.currentTimeMillis();
                 if (mainConfiguration.getBooleanValue("rounding.enabled", true)) {
-                    time = DateUtils.round(new Date(time), timeResolution).getTime();
+                    time = DateUtils.truncate(new Date(time), timeResolution).getTime();
                 }
                 persistentDataContainer.set(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG, time);
             } else {
