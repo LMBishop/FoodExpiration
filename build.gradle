@@ -8,6 +8,7 @@ version = '1.0'
 processResources {
     from(sourceSets.main.resources.srcDirs) {
         include 'plugin.yml'
+        include 'config.yml'
         expand('version': project.version)
     }
 }

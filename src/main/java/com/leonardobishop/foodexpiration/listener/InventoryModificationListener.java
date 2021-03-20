@@ -1,8 +1,6 @@
 package com.leonardobishop.foodexpiration.listener;
 
 import com.leonardobishop.foodexpiration.FoodExpirationPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.EntityEffect;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,7 +9,6 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class InventoryModificationListener implements Listener {
@@ -40,6 +37,8 @@ public class InventoryModificationListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onMergeItem(InventoryClickEvent event) {
+        if (!plugin.getConfiguration().getBooleanValue("allow-mixing")) return;
+
         if (event.getClickedInventory() != null
                 && event.getClickedInventory().getType() == InventoryType.PLAYER
                 && event.getCurrentItem() != null

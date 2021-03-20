@@ -9,6 +9,7 @@ import com.leonardobishop.foodexpiration.foodlevel.ReflectionFoodLevelProvider;
 import com.leonardobishop.foodexpiration.listener.FoodConsumeListener;
 import com.leonardobishop.foodexpiration.listener.InventoryModificationListener;
 import com.leonardobishop.foodexpiration.listener.JoinEventListener;
+import org.apache.commons.lang.time.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -26,9 +27,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +41,8 @@ public class FoodExpirationPlugin extends JavaPlugin {
 
     private ExpirationStageRegister expirationStageRegister;
     private FoodLevelProvider foodLevelProvider;
+    private Configuration mainConfiguration;
+    private int timeResolution;
 
     @Override
     public void onEnable() {
@@ -46,6 +50,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
 
         this.expirationStageRegister = new ExpirationStageRegister();
         this.foodLevelProvider = new ReflectionFoodLevelProvider();
+        this.mainConfiguration = new Configuration();
 
         File directory = new File(String.valueOf(this.getDataFolder()));
         if (!directory.exists() && !directory.isDirectory()) {
@@ -137,6 +142,9 @@ public class FoodExpirationPlugin extends JavaPlugin {
 
             if (!persistentDataContainer.has(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG)) {
                 time = System.currentTimeMillis();
+                if (mainConfiguration.getBooleanValue("rounding.enabled", true)) {
+                    time = DateUtils.round(System.currentTimeMillis(), timeResolution).getTime();
+                }
                 persistentDataContainer.set(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG, time);
             } else {
                 time = persistentDataContainer.get(FoodExpirationPlugin.PRODUCTION_NAMESPACED_KEY, PersistentDataType.LONG);
@@ -152,6 +160,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
     public void reloadPluginConfiguration() {
         this.reloadConfig();
         expirationStageRegister.clearRegistrations();
+        mainConfiguration.loadConfig(this.getConfig());
 
         if (this.getConfig().contains("expiry-stages")) {
             List<Map> stages = (List<Map>) this.getConfig().getList("expiry-stages");
@@ -209,7 +218,27 @@ public class FoodExpirationPlugin extends JavaPlugin {
             }
         }
 
+        if (mainConfiguration.getBooleanValue("rounding.enabled", true)) {
+            switch (mainConfiguration.getStringValue("rounding.time-resolution").toLowerCase()) {
+                case "second": case "seconds":
+                    timeResolution = Calendar.SECOND;
+                    break;
+                case "minute": case "minutes":
+                    timeResolution = Calendar.MINUTE;
+                    break;
+                case "hour": case "hours":
+                    timeResolution = Calendar.HOUR;
+                    break;
+                case "day": case "days":
+                    timeResolution = Calendar.DAY_OF_MONTH;
+                    break;
+            }
+        }
+
         expirationStageRegister.finaliseRegistrations();
     }
 
+    public Configuration getConfiguration() {
+        return mainConfiguration;
+    }
 }

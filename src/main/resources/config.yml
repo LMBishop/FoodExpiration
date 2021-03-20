@@ -1,6 +1,89 @@
-# The default configuration can be located here
+# The default configuration with preserved can be located here
 # https://github.com/LMBishop/FoodExpiration/blob/master/src/main/resources/config.yml
+# Generated with plugin version ${version}
 
+# --------------------
+# Food stages
+# --------------------
+
+# The list of all expiry stages a food item can have.
+# Please look at the examples of each stage, **the formatting is crucial**.
+#
+# Values:  <list of maps>
+#          # The name of the stage will have
+#          #
+#          # Values: <any string value>
+#          name: [...]
+#          after:
+#            # The time where any food item is at this expiration stage.
+#            #
+#            # Values: <any positive integer>
+#            time: [...]
+#
+#            # The time unit for the above.
+#            #
+#            # Values: "NANOSECONDS", "MICROSECONDS", "MILLISECONDS", "SECONDS", "MINUTES", "HOURS", "DAYS"
+#            unit: [...]
+#
+#          # The multiplier this has on the nutrition has on an item, where 1 means normal.
+#          #
+#          # Values: <any positive float (decimal)>
+#          hunger-modifier: [...]
+#
+#          # The description of this food item, seen in the lore when hovering over. Use %name% to reference
+#          # the name.
+#          #
+#          # Values: <any string value>
+#          description: [...]
+#
+#          # The extended of this food item, seen in the underneath the description when hovering over.
+#          #
+#          # Values: <list of strings>
+#          extended-description: [...]
+#
+#          # The effects this item apply to the player if this is consumed.
+#          #
+#          # Values: <list of maps>
+#          effects:
+#                    # The type of option effect
+#                    #
+#                    # Values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+#                    type: [...]
+#
+#                    # The duration of the effect in ticks. 20 ticks = 1 second.
+#                    #
+#                    # Values: <any positive integer>
+#                    duration: [...]
+#
+#                    # The amplifier of the effect, starting from 0.
+#                    #
+#                    # Values: <any positive integer>
+#                    amplifier: [...]
+#
+#                    # The likelihood this effect will be applied to the player.
+#                    #
+#                    # Values: <any float (decimal) between 0 and 1, inclusively>
+#                    chance: [...]
+#
+# Examples:
+#  - name: "Spoiled"
+#    after:
+#      time: 18
+#      unit: "HOURS"
+#    hunger-modifier: 0.5
+#    description: "&6%name%"
+#    extended-description:
+#      - "&7&oPotentially unsafe food, with"
+#      - "&7little nutritional value."
+#    effects:
+#      - type: "CONFUSION"
+#        duration: 120
+#        amplifier: 0
+#        chance: 0.7
+#      - type: "POISON"
+#        duration: 60
+#        amplifier: 0
+#        chance: 0.4
 expiry-stages:
   - name: "Fresh"
     after:
@@ -64,7 +147,29 @@ expiry-stages:
         duration: 100
         amplifier: 1
 
-options:
+# --------------------
+# General options
+# --------------------
+
+rounding:
+  # Enable rounding for dates in food. If disabled, this means each food item
+  # will be accurate to the millisecond, which effectively means they will never stack.
+  #
+  # Values:  true, false
+  # Default: true
+  enabled: true
+
+  # The resolution for rounding. The less accurate the rounding, the more items can stack.
+  #
+  # Values:  "SECONDS", "HOURS", "MINUTES", "DAYS"
+  # Default: "HOURS"
   time-resolution: "HOURS"
-  allow-mixing: true
-  notify-mixing: true
+
+# Enable mixing for food items. If enabled, players can merge two food stacks with different
+# expiry dates and the older stack will be favoured. You can merge a stack by clicking
+# on another stack (of the same type) holding another stack. A sound will play if you
+# successfully merge stacks.
+#
+# Values:  true, false
+# Default: true
+allow-mixing: true
