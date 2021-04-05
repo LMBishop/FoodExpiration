@@ -22,7 +22,7 @@ public class FoodConsumeListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onFoodConsume(FoodLevelChangeEvent event) {
-        if (event.getItem() == null || !event.getItem().getType().isEdible()) return;
+        if (event.getItem() == null || !plugin.isFood(event.getItem().getType())) return;
 
         ItemMeta itemMeta = event.getItem().getItemMeta();
         PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();

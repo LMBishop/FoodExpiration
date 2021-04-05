@@ -9,7 +9,7 @@
 # The list of all expiry stages a food item can have.
 # Please look at the examples of each stage, **the formatting is crucial**.
 #
-# Values:  <list of maps>
+# Values:  (list of)
 #          # The name of the stage will have
 #          #
 #          # Values: <any string value>
@@ -38,12 +38,12 @@
 #
 #          # The extended of this food item, seen in the underneath the description when hovering over.
 #          #
-#          # Values: <list of strings>
+#          # Values: <(list of) any string value>
 #          extended-description: [...]
 #
 #          # The effects this item apply to the player if this is consumed.
 #          #
-#          # Values: <list of maps>
+#          # Values: (list of)
 #          effects:
 #                    # The type of potion effect
 #                    #
@@ -151,6 +151,25 @@ expiry-stages:
 # General options
 # --------------------
 
+# Options here relate to how the plugin considers items to be a food item
+food-items:
+  # Automatically define what is food and what is not. This includes anything which is edible,
+  # which could range from bread to spider eyes, however this depends on the implementation.
+  #
+  # Values:  true, false
+  # Default: true
+  auto: true
+  # The list of food items on the server. Note that if 'auto' is set to true, this
+  # list is ignored and the server decides what constitutes as food.
+  #
+  # Values:  (list of) https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+  foods:
+    - "COOKED_BEEF"
+    - "COOKED_CHICKEN"
+    # - "COOKED_RABBIT"
+    # and so on ...
+
+# Options here relate to how expiry dates are assigned
 rounding:
   # Enable rounding for dates in food. If disabled, this means each food item
   # will be accurate to the millisecond, which effectively means they will never stack.
@@ -158,10 +177,9 @@ rounding:
   # Values:  true, false
   # Default: true
   enabled: true
-
   # The resolution for rounding. The less accurate the rounding, the more items can stack.
   #
-  # Values:  "SECONDS", "HOURS", "MINUTES", "DAYS"
+  # Values:  "SECONDS", "MINUTES", "HOURS", "DAYS"
   # Default: "HOURS"
   time-resolution: "HOURS"
 
@@ -174,6 +192,7 @@ rounding:
 # Default: true
 allow-mixing: true
 
+# Options here relate to how the information about a piece of food is updated
 item-refresh:
   # Constantly check the player's inventory for food items and apply expiry dates on an interval.
   # This works on a queue based system to prevent lag, although this can be disabled entirely here and

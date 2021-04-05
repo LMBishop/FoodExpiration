@@ -13,6 +13,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.bstats.bukkit.MetricsLite;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -138,7 +139,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
         if (is == null) return;
         if (expirationStageRegister.isAcceptingRegistrations()) return;
 
-        if (is.getType().isEdible()) {
+        if (isFood(is.getType())) {
             ItemMeta itemMeta = is.getItemMeta();
             PersistentDataContainer persistentDataContainer = itemMeta.getPersistentDataContainer();
             long time;
@@ -157,6 +158,14 @@ public class FoodExpirationPlugin extends JavaPlugin {
 
             itemMeta.setLore(stage.asItemLore());
             is.setItemMeta(itemMeta);
+        }
+    }
+
+    public boolean isFood(Material material) {
+        if (mainConfiguration.getBooleanValue("food-items.auto", true)) {
+            return material.isEdible();
+        } else {
+            return mainConfiguration.getStringListValue("food-items.foods").contains(material.toString());
         }
     }
 
