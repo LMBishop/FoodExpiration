@@ -55,7 +55,7 @@ public class FoodExpirationPlugin extends JavaPlugin {
         PRODUCTION_NAMESPACED_KEY = new NamespacedKey(this, "production-date");
 
         this.expirationStageRegister = new ExpirationStageRegister();
-        this.foodLevelProvider = new ReflectionFoodLevelProvider();
+        this.foodLevelProvider = new ReflectionFoodLevelProvider(this);
         this.mainConfiguration = new Configuration();
 
         File directory = new File(String.valueOf(this.getDataFolder()));

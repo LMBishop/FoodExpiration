@@ -21,11 +21,13 @@ public class ReflectionFoodLevelProvider implements FoodLevelProvider {
     private Method getFoodInfoMethod;
     private Method getNutritionMethod;
 
-    public ReflectionFoodLevelProvider() {
+    public ReflectionFoodLevelProvider(FoodExpirationPlugin plugin) {
+        this.plugin = plugin;
         enabled = true;
         try {
             // this shit actually works lol
             version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+            plugin.getLogger().info("Your server is running version " + version + ".");
             Class craftItemStackClass = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
             asNMSCopyMethod = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class);
             Class nmsItemStackClass = Class.forName("net.minecraft.server." + version + ".ItemStack");
@@ -34,8 +36,25 @@ public class ReflectionFoodLevelProvider implements FoodLevelProvider {
             getFoodInfoMethod = nmsItemClass.getMethod("getFoodInfo");
             Class nmsFoodInfoClass = Class.forName("net.minecraft.server." + version + ".FoodInfo");
             getNutritionMethod = nmsFoodInfoClass.getMethod("getNutrition");
-        } catch (NoSuchMethodException | ClassNotFoundException | ArrayIndexOutOfBoundsException e) {
-            plugin.getLogger().severe("Failed to initialise food level provider! Using fallback.");
+            plugin.getLogger().info("ReflectionFoodLevelProvider initialised with version specific mappings.");
+        } catch (ClassNotFoundException e) {
+            try {
+                Class craftItemStackClass = Class.forName("org.bukkit.craftbukkit." + version + ".inventory.CraftItemStack");
+                asNMSCopyMethod = craftItemStackClass.getMethod("asNMSCopy", ItemStack.class);
+                Class nmsItemStackClass = Class.forName("net.minecraft.world.item.ItemStack");
+                getItemMethod = nmsItemStackClass.getMethod("getItem");
+                Class nmsItemClass = Class.forName("net.minecraft.world.item.Item");
+                getFoodInfoMethod = nmsItemClass.getMethod("getFoodInfo");
+                Class nmsFoodInfoClass = Class.forName("net.minecraft.world.food.FoodInfo");
+                getNutritionMethod = nmsFoodInfoClass.getMethod("getNutrition");
+                plugin.getLogger().info("ReflectionFoodLevelProvider initialised with new mappings.");
+            } catch (NoSuchMethodException | ClassNotFoundException | ArrayIndexOutOfBoundsException ex) {
+                plugin.getLogger().severe("Failed to initialise food level provider!");
+                enabled = false;
+                ex.printStackTrace();
+            }
+        } catch (NoSuchMethodException | ArrayIndexOutOfBoundsException e) {
+            plugin.getLogger().severe("Failed to initialise food level provider!");
             enabled = false;
             e.printStackTrace();
         }
